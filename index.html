@@ -584,7 +584,7 @@
         const SUPABASE_URL = 'https://ajsbrxufjeuyukjvgpyg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqc2JyeHVmamV1eXVranZncHlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0MTU0NjYsImV4cCI6MjA4Mzk5MTQ2Nn0.kWoufzcjRTU_ivK9QpqpdGZVsoF4yhJyakh8LVzTzh0';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Cache for packages and services
         let packagesCache = [];
@@ -607,8 +607,8 @@
         // Load all data from Supabase
         async function loadAllData() {
             const [packagesResult, servicesResult] = await Promise.all([
-                supabase.from('packages').select('*').order('created_at', { ascending: false }),
-                supabase.from('services').select('*').order('created_at', { ascending: false })
+                db.from('packages').select('*').order('created_at', { ascending: false }),
+                db.from('services').select('*').order('created_at', { ascending: false })
             ]);
             
             if (packagesResult.error) throw packagesResult.error;
@@ -665,7 +665,7 @@
                     spoiled: false
                 };
                 
-                const { data, error } = await supabase.from('packages').insert([pkg]).select();
+                const { data, error } = await db.from('packages').insert([pkg]).select();
                 
                 if (error) throw error;
                 
@@ -865,7 +865,7 @@
                     notes: document.getElementById('service-notes').value.trim()
                 };
                 
-                const { data, error } = await supabase.from('services').insert([service]).select();
+                const { data, error } = await db.from('services').insert([service]).select();
                 
                 if (error) throw error;
                 
@@ -904,7 +904,7 @@
                 const pkg = packagesCache.find(p => p.id === packageId);
                 const remainingCount = getServicesRemaining(pkg);
                 
-                const { error } = await supabase.from('packages').update({
+                const { error } = await db.from('packages').update({
                     spoiled: true,
                     spoiled_date: document.getElementById('spoilage-date').value,
                     spoiled_notes: document.getElementById('spoilage-notes').value.trim(),
